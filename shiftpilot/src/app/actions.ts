@@ -245,18 +245,32 @@ function validTimezone(tz: string): boolean {
   }
 }
 
-/** Parses "Name, +65 9123 4567, opener barista" lines. Skills are optional. */
-function parseTeam(text: string, knownSkills: string[]) {
+/** Parses the structured team rows from setup. Skills are optional. */
+function parseTeam(form: FormData, knownSkills: string[]) {
   const people: { name: string; phone: string; skills: string[] }[] = [];
-  for (const [i, raw] of text.split(/\r?\n/).entries()) {
-    const line = raw.trim();
-    if (!line) continue;
-    const [name, phone = "", skills = ""] = line.split(/\s*[,\t]\s*/);
+  const names = form.getAll("teamName").map(String);
+  const phones = form.getAll("teamPhone").map(String);
+  const skills = form.getAll("teamSkills").map(String);
+  const rowCount = Math.max(names.length, phones.length, skills.length);
+  const lower = new Map(knownSkills.map((skill) => [skill.toLowerCase(), skill]));
+
+  for (let i = 0; i < rowCount; i++) {
+    const name = (names[i] ?? "").trim();
+    const phone = (phones[i] ?? "").trim();
+    const skillText = (skills[i] ?? "").trim();
+    if (!name && !phone && !skillText) continue;
     const digits = normalizePhone(phone);
-    if (!name) throw new Error(`Line ${i + 1} needs a name.`);
-    if (digits.length < 8) throw new Error(`Line ${i + 1} (${name}) needs a WhatsApp number with country code, e.g. +65 9123 4567.`);
-    const lower = new Map(knownSkills.map((s) => [s.toLowerCase(), s]));
-    people.push({ name, phone: digits, skills: skills.split(/[\s;/]+/).map((s) => lower.get(s.toLowerCase()) ?? s).filter(Boolean) });
+    if (!name) throw new Error(`Person ${i + 1} needs a name.`);
+    if (digits.length < 8) throw new Error(`${name} needs a WhatsApp number with country code, e.g. +65 9123 4567.`);
+    people.push({
+      name,
+      phone: digits,
+      skills: skillText
+        .split(/[,;/]+/)
+        .map((skill) => skill.trim())
+        .filter(Boolean)
+        .map((skill) => lower.get(skill.toLowerCase()) ?? skill),
+    });
   }
   return people;
 }
@@ -305,7 +319,7 @@ export async function setupAnswerAction(_: FormState, form: FormData): Promise<F
   } else if (step === "team") {
     let people;
     try {
-      people = parseTeam(value, ws.skills);
+      people = parseTeam(form, ws.skills);
     } catch (e) {
       return { error: (e as Error).message };
     }

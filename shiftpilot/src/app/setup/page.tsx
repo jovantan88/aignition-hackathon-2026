@@ -7,6 +7,7 @@ import { getDb, schema } from "@/db";
 import { AutoRefresh } from "@/components/auto-refresh";
 import { CopyButton } from "@/components/copy-button";
 import { StepForm } from "@/components/step-form";
+import { TeamMembersFields } from "@/components/team-members-fields";
 import { getBusinessNumber } from "@/integrations/whatsapp";
 import { PRESETS } from "@/lib/presets";
 import { DAY_SHORT } from "@/lib/time";
@@ -78,7 +79,7 @@ export default async function SetupPage({ searchParams }: PageProps<"/setup">) {
       </div>
 
       <main className="flex flex-1 items-center justify-center px-6 pb-24">
-        <div className="w-full max-w-xl">
+        <div className={cn("w-full", page.key === "team" ? "max-w-3xl" : "max-w-xl")}>
           <Step pageKey={page.key} />
           {index > 0 && (
             <Link href={`/setup?step=${encodeURIComponent(pages[index - 1].key)}`} className="mt-8 inline-block text-sm text-muted-foreground hover:text-foreground">
@@ -198,22 +199,15 @@ async function Step({ pageKey }: { pageKey: string }) {
         title="Who's on your team?"
         hint={
           <>
-            One person per line: name, WhatsApp number with country code, and skills if any
+            Add one person per row. Include the country code with each WhatsApp number and any skills
             {ws.skills.length ? ` (${ws.skills.join(", ")})` : ""}.
           </>
         }
       >
         <StepForm step="team" enterHint={false}>
-          <textarea
-            name="value"
-            rows={6}
-            autoFocus
-            aria-label="Team members"
-            placeholder={`Aisha, +65 9123 4567, ${ws.skills[0] ?? ""}\nBen, +65 8123 4567`}
-            className="w-full rounded-xl border border-input bg-background px-4 py-3 text-lg outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-          />
+          <TeamMembersFields skills={ws.skills} requireFirstRow={existing.length === 0} />
           {existing.length > 0 && (
-            <p className="text-sm text-muted-foreground">Already added: {existing.map((w) => w.name).join(", ")}. Leave this empty to keep going.</p>
+            <p className="text-sm text-muted-foreground">Already added: {existing.map((w) => w.name).join(", ")}. Add more people above, or continue.</p>
           )}
         </StepForm>
       </Question>
