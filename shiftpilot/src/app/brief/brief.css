@@ -1,0 +1,480 @@
+/* /brief: the one-page solution brief. A long-form editorial page: a 600px reading column with 800px figures,
+   dashed hairlines, mono notes and one orange accent. Everything is scoped to .brief so it cannot leak into the workspace. */
+body:has(.brief) {
+  background: #fcfaf5;
+}
+
+.brief {
+  --b-paper: #fcfaf5;
+  --b-wash: #fff8e8;
+  --b-head: #434343;
+  --b-body: #4f4f4d;
+  --b-mute: #6c6b63; /* AA on paper and on the wash */
+  --b-rule: #a3a3a3;
+  --b-chip: #e5e5e5;
+  --b-accent: #c4400c;
+  --b-accent-soft: #fbe3d6;
+  --b-measure: 600px;
+  --b-figure: 800px;
+  --b-gutter: 24px;
+  --b-serif: var(--font-brief-serif), "Source Serif 4", ui-serif, Georgia, serif;
+  --b-mono: var(--font-brief-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  min-height: 100vh;
+  padding-bottom: 72px;
+  background: var(--b-paper);
+  color: var(--b-body);
+  font-family: var(--font-brief-sans), ui-sans-serif, system-ui, "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  -webkit-font-smoothing: antialiased;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.brief a {
+  color: inherit;
+}
+.brief :focus-visible {
+  outline: 2px solid var(--b-accent);
+  outline-offset: 3px;
+}
+
+.brief-measure {
+  max-width: var(--b-measure);
+  margin-inline: auto;
+  padding-inline: var(--b-gutter);
+}
+.brief-figure {
+  max-width: var(--b-figure);
+  margin-inline: auto;
+  padding-inline: var(--b-gutter);
+}
+.brief-section {
+  margin-top: 40px;
+  scroll-margin-top: 24px;
+}
+.brief-block {
+  margin-top: 24px;
+}
+
+/* masthead */
+.brief-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 24px;
+  padding-top: 34px;
+  padding-bottom: 42px;
+}
+.brief-mark {
+  color: var(--b-head);
+  text-decoration: none;
+}
+.brief-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px 20px;
+}
+.brief-nav a {
+  color: var(--b-mute);
+  text-decoration: none;
+}
+.brief-nav a:hover {
+  color: var(--b-head);
+}
+
+/* essay text */
+.brief-essay > * + * {
+  margin-top: 14px;
+}
+.brief-essay h1,
+.brief-essay h2 {
+  color: var(--b-head);
+  font-family: var(--b-serif);
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 35.2px;
+  text-wrap: balance;
+}
+.brief-essay h2 + p {
+  margin-top: 16px;
+}
+.brief-essay a {
+  color: var(--b-head);
+  text-decoration: underline;
+  text-decoration-color: var(--b-rule);
+  text-underline-offset: 3px;
+}
+.brief-essay a:hover {
+  color: var(--b-accent);
+  text-decoration-color: currentColor;
+}
+.brief-byline {
+  margin-top: 12px !important;
+  color: var(--b-mute);
+  font-family: var(--b-mono);
+  font-size: 14px;
+  line-height: 19.6px;
+}
+
+/* label / value pairs */
+.brief-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 24px;
+}
+.brief-pair {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px dashed var(--b-rule);
+}
+.brief-pair:nth-child(-n + 2) {
+  border-top: 1px dashed var(--b-rule);
+}
+.brief-pair dt {
+  flex: none;
+  color: var(--b-head);
+}
+.brief-pair dd {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.brief-sub {
+  margin-top: 4px;
+  word-break: keep-all; /* don't split 中文 across lines */
+  overflow-wrap: break-word;
+  color: var(--b-mute);
+  font-family: var(--b-mono);
+  font-size: 12px;
+  line-height: 16px;
+}
+.brief-note {
+  margin-top: 14px;
+  color: var(--b-mute);
+  font-family: var(--b-mono);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* sub-headings and bar rows */
+.brief-subhead {
+  padding: 18px 0 8px;
+  color: var(--b-head);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 19.2px;
+}
+.brief-figure > .brief-subhead:first-child,
+.brief-figure > div:first-child > .brief-subhead {
+  padding-top: 0;
+}
+.brief-bars li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 120px 64px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px dashed var(--b-rule);
+  font-size: 14px;
+  line-height: 20px;
+}
+.brief-bars li:last-child {
+  border-bottom: 1px dashed var(--b-rule);
+}
+.brief-bar {
+  display: block;
+  height: 2px;
+  background: var(--b-chip);
+}
+.brief-bar > span {
+  display: block;
+  height: 100%;
+  background: var(--b-head);
+}
+.brief-num {
+  color: var(--b-mute);
+  font-family: var(--b-mono);
+  font-size: 14px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* name + description rows */
+.brief-rows li {
+  display: grid;
+  grid-template-columns: minmax(0, 0.38fr) minmax(0, 0.62fr);
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px dashed var(--b-rule);
+  font-size: 14px;
+  line-height: 20px;
+}
+.brief-rows li:last-child {
+  border-bottom: 1px dashed var(--b-rule);
+}
+.brief-row-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  color: var(--b-head);
+  font-weight: 500;
+}
+.brief-chip {
+  display: inline-block;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--b-chip);
+  color: var(--b-head);
+  font-family: var(--b-mono);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+}
+
+/* limitation cards */
+.brief-essay h2 em {
+  color: var(--b-accent);
+  font-style: normal;
+}
+.brief-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.brief-cards li {
+  padding: 20px;
+  border: 1px solid #e3dfd2;
+  border-radius: 12px;
+  background: #fff;
+}
+.brief-cards h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--b-head);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 24px;
+}
+.brief-cards p {
+  margin-top: 8px;
+  font-size: 15px;
+  line-height: 22px;
+}
+
+/* table */
+.brief-table-wrap {
+  overflow-x: auto;
+}
+.brief-table {
+  width: 100%;
+  min-width: 480px;
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: 20px;
+  font-variant-numeric: tabular-nums;
+}
+.brief-table th {
+  padding: 10px 14px 10px 0;
+  border-bottom: 1px solid var(--b-rule);
+  color: var(--b-mute);
+  font-family: var(--b-mono);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  text-align: left;
+  white-space: nowrap;
+}
+.brief-table td {
+  padding: 8px 14px 8px 0;
+  border-bottom: 1px dashed var(--b-rule);
+  vertical-align: top;
+}
+.brief-table tr.is-total td {
+  background: var(--b-wash);
+  border-bottom-color: var(--b-rule);
+  color: var(--b-accent);
+  font-weight: 500;
+}
+.brief-table tr.is-total td:first-child {
+  box-shadow: -8px 0 0 var(--b-wash);
+}
+.brief-table tr.is-total td:last-child {
+  box-shadow: 8px 0 0 var(--b-wash);
+}
+
+/* workflow diagram */
+.brief-wash {
+  margin: 0;
+  padding: 32px 24px;
+  background: var(--b-wash);
+}
+.brief-flow {
+  max-width: 448px;
+  margin-inline: auto;
+}
+.brief-node {
+  padding: 12px 16px;
+  border: 1px dashed var(--b-rule);
+  text-align: center;
+}
+.brief-node.is-gate {
+  border-color: var(--b-accent);
+}
+.brief-node.is-gate .brief-chip {
+  background: var(--b-accent-soft);
+  color: var(--b-accent);
+}
+.brief-node-title {
+  margin-top: 8px;
+  color: var(--b-head);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 20px;
+  text-wrap: balance;
+}
+.brief-cap {
+  margin-top: 4px;
+  color: var(--b-mute);
+  font-family: var(--b-mono);
+  font-size: 12px;
+  line-height: 16px;
+}
+.brief-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+}
+.brief-link::before {
+  content: "";
+  position: absolute;
+  inset-block: 4px;
+  left: 50%;
+  width: 1px;
+  background: var(--b-rule);
+}
+.brief-link span {
+  position: relative;
+  padding-inline: 8px;
+  background: var(--b-wash);
+  color: var(--b-mute);
+  font-family: var(--b-mono);
+  font-size: 12px;
+  line-height: 16px;
+}
+.brief-split {
+  display: block;
+  width: 100%;
+  height: auto;
+  fill: none;
+  stroke: var(--b-rule);
+  stroke-width: 1;
+}
+.brief-branch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 4px 0 8px;
+  color: var(--b-mute);
+  font-family: var(--b-mono);
+  font-size: 12px;
+  line-height: 16px;
+  text-align: center;
+}
+.brief-pairnodes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.brief-pairnodes .brief-node {
+  padding-inline: 12px;
+}
+
+/* footer */
+.brief-footer {
+  margin-top: 56px;
+  font-family: var(--b-mono);
+  font-size: 14px;
+  line-height: 19.6px;
+}
+.brief-footer > p:first-child {
+  color: var(--b-body);
+  font-family: var(--font-brief-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+}
+.brief-foot-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-top: 12px;
+}
+.brief-foot-links a {
+  color: var(--b-head);
+  text-decoration: none;
+}
+.brief-foot-links a:hover,
+.brief-sources a:hover {
+  color: var(--b-accent);
+}
+.brief-sources {
+  margin-top: 12px;
+  color: var(--b-mute);
+  font-size: 12px;
+  line-height: 18px;
+}
+.brief-sources a {
+  text-decoration: underline;
+  text-decoration-color: var(--b-rule);
+  text-underline-offset: 2px;
+}
+
+@media (max-width: 560px) {
+  .brief-meta {
+    grid-template-columns: 1fr;
+  }
+  .brief-pair:nth-child(2) {
+    border-top: 0;
+  }
+  .brief-bars li {
+    grid-template-columns: minmax(0, 1fr) 72px 60px;
+    gap: 8px;
+  }
+  .brief-rows li {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .brief-cards {
+    grid-template-columns: 1fr;
+  }
+  .brief-wash {
+    padding: 24px 12px;
+  }
+  .brief-pairnodes,
+  .brief-branch {
+    gap: 8px;
+  }
+  .brief-pairnodes .brief-node {
+    padding-inline: 8px;
+  }
+  .brief-essay h1,
+  .brief-essay h2 {
+    font-size: 28px;
+    line-height: 31px;
+  }
+}
+
+@media print {
+  .brief-nav {
+    display: none;
+  }
+}

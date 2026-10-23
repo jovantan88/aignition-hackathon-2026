@@ -36,6 +36,23 @@ function LiveBridge({ children }: { children: React.ReactNode }) {
     let es: EventSource | null = null;
     let stopped = false;
     let retry: ReturnType<typeof setTimeout>;
+    // Busy moments emit many events a second; cancelling the in-flight refetch on each one
+    // means slow queries never resolve, so batch them and let running fetches finish first.
+    const pending = new Map<string, string[]>();
+    let flushTimer: ReturnType<typeof setTimeout> | undefined;
+    const flush = () => {
+      flushTimer = undefined;
+      for (const [id, queryKey] of [...pending]) {
+        if (qc.isFetching({ queryKey })) continue;
+        pending.delete(id);
+        void qc.invalidateQueries({ queryKey }, { cancelRefetch: false });
+      }
+      if (pending.size) flushTimer = setTimeout(flush, 300);
+    };
+    const invalidate = (keys: string[][]) => {
+      for (const k of keys) pending.set(k.join("/"), k);
+      flushTimer ??= setTimeout(flush, 250);
+    };
     const connect = () => {
       es = new EventSource(`/api/live?org=all`);
       es.onopen = () => setConnected(true);
@@ -55,7 +72,7 @@ function LiveBridge({ children }: { children: React.ReactNode }) {
         if (msg.topic === "clock.changed" || msg.topic === "demo.reset") {
           void qc.invalidateQueries();
         } else {
-          for (const key of INVALIDATE[msg.topic] ?? []) void qc.invalidateQueries({ queryKey: key });
+          invalidate(INVALIDATE[msg.topic] ?? []);
         }
         handlers.current.forEach((h) => h(msg));
       };
@@ -64,6 +81,7 @@ function LiveBridge({ children }: { children: React.ReactNode }) {
     return () => {
       stopped = true;
       clearTimeout(retry);
+      clearTimeout(flushTimer);
       es?.close();
     };
   }, [qc]);
